@@ -10,3 +10,10 @@ readable/__pycache__/
 .env.*
 *.key
 *.pem
+*.edf
+*.npy
+*.npz
+*.pt
+*.pth
+*.joblib
+test_predictions_*ms.csv

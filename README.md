@@ -1,8 +1,14 @@
 # MESA sleep staging: code for professor review
 
+[![Engineering checks](https://github.com/11hritik11/mesa-sleep-staging-review/actions/workflows/reproduction.yml/badge.svg)](https://github.com/11hritik11/mesa-sleep-staging-review/actions/workflows/reproduction.yml)
+
 Archived experiment code and aggregate evidence supporting **71.15% mean five-stage balanced accuracy** in the presentation (RUN-006).
 
+**Original multiple-sensor checkpoint replay passed:** all four timing conditions reproduce the saved probabilities exactly, with zero class disagreements. Mean balanced accuracy is **0.7114948599784747**. See [the evidence](checkpoint_replay_evidence.json) and [verification status](VERIFICATION_STATUS.md). This establishes replay from trained weights, not a completed fresh training rerun.
+
 **Executable reproduction:** [REPRODUCING.md](REPRODUCING.md) documents the locked environment, fitting tests, original-checkpoint replay and fresh training from authorized prepared features. Full raw-data reconstruction and a completed fresh training rerun are not claimed.
+
+**Start with [the model walkthrough](MODEL_WALKTHROUGH.md)** for inputs, model architecture, training, selection and the exact calculation of 71.15%. [Verification status](VERIFICATION_STATUS.md) distinguishes completed checks from pending work.
 
 ## Clone and check
 

@@ -1,0 +1,371 @@
+{
+  "status": "PASS",
+  "test_inference_rerun": true,
+  "inference_cache_used": false,
+  "tolerance": 1e-06,
+  "checkpoint_sha256": {
+    "bigru_multisensor": "fab2403a061df4b7075992fa7bfaaca9d9e3d1cb30f8795e0a44baab4f2b0b52",
+    "lightgbm_multi": "fc8408ec8f27b79bf76705c86059ca0fc1647cb68612a590a517135175f71509",
+    "tcn_multisensor": "1bdce0dafbeb5f0f3bdde520472276074752f43886d533e59c7a5af31bd28ee4"
+  },
+  "tracks": {
+    "multi": {
+      "0": {
+        "max_probability_absolute_error": 0.0,
+        "prediction_disagreements": 0,
+        "expanded_epochs": 281712,
+        "common": {
+          "n_epochs": 194310,
+          "accuracy": 0.6448613041016932,
+          "macro_f1": 0.6245803931540793,
+          "kappa": 0.5487551146012044,
+          "confusion_matrix": [
+            [
+              45300,
+              6958,
+              1191,
+              484,
+              1434
+            ],
+            [
+              1127,
+              10912,
+              2387,
+              564,
+              1218
+            ],
+            [
+              1797,
+              18011,
+              34887,
+              24044,
+              3114
+            ],
+            [
+              127,
+              554,
+              2776,
+              12162,
+              107
+            ],
+            [
+              268,
+              1921,
+              748,
+              177,
+              22042
+            ]
+          ],
+          "per_stage": {
+            "Wake": {
+              "precision": 0.9317345070857073,
+              "recall": 0.818176892372713,
+              "f1": 0.8712711326524725,
+              "support": 55367
+            },
+            "N1": {
+              "precision": 0.28449264782563355,
+              "recall": 0.6732477788746298,
+              "f1": 0.39997067663661023,
+              "support": 16208
+            },
+            "N2": {
+              "precision": 0.8308604634547143,
+              "recall": 0.4262152883828326,
+              "f1": 0.5634114436136367,
+              "support": 81853
+            },
+            "N3": {
+              "precision": 0.32491784884186903,
+              "recall": 0.7733689431514689,
+              "f1": 0.45758789999435634,
+              "support": 15726
+            },
+            "REM": {
+              "precision": 0.7896113200788106,
+              "recall": 0.8762124344092861,
+              "f1": 0.8306608128733206,
+              "support": 25156
+            }
+          },
+          "participant_macro_f1_mean": 0.5728340168659022,
+          "balanced_accuracy": 0.7134442674381861
+        },
+        "matches_saved_outputs": true
+      },
+      "20": {
+        "max_probability_absolute_error": 0.0,
+        "prediction_disagreements": 0,
+        "expanded_epochs": 281712,
+        "common": {
+          "n_epochs": 194310,
+          "accuracy": 0.642545417116978,
+          "macro_f1": 0.6230445146206017,
+          "kappa": 0.5462395231754817,
+          "confusion_matrix": [
+            [
+              45063,
+              7148,
+              1223,
+              504,
+              1429
+            ],
+            [
+              1077,
+              10857,
+              2489,
+              582,
+              1203
+            ],
+            [
+              1704,
+              17624,
+              34677,
+              24780,
+              3068
+            ],
+            [
+              122,
+              541,
+              2613,
+              12349,
+              101
+            ],
+            [
+              292,
+              1919,
+              812,
+              226,
+              21907
+            ]
+          ],
+          "per_stage": {
+            "Wake": {
+              "precision": 0.933793360686311,
+              "recall": 0.8138963642602994,
+              "f1": 0.8697322074788902,
+              "support": 55367
+            },
+            "N1": {
+              "precision": 0.28504292577909635,
+              "recall": 0.6698543928923988,
+              "f1": 0.3999115973258191,
+              "support": 16208
+            },
+            "N2": {
+              "precision": 0.8293155402496771,
+              "recall": 0.42364971351080594,
+              "f1": 0.5608125045485053,
+              "support": 81853
+            },
+            "N3": {
+              "precision": 0.32124554512109466,
+              "recall": 0.7852600788503116,
+              "f1": 0.45596027101371683,
+              "support": 15726
+            },
+            "REM": {
+              "precision": 0.7906380828641547,
+              "recall": 0.870845921450151,
+              "f1": 0.8288059927360775,
+              "support": 25156
+            }
+          },
+          "participant_macro_f1_mean": 0.5713135962893113,
+          "balanced_accuracy": 0.7127012941927934
+        },
+        "matches_saved_outputs": true
+      },
+      "40": {
+        "max_probability_absolute_error": 0.0,
+        "prediction_disagreements": 0,
+        "expanded_epochs": 281712,
+        "common": {
+          "n_epochs": 194310,
+          "accuracy": 0.6392671504297257,
+          "macro_f1": 0.6203860382906317,
+          "kappa": 0.5429166886092947,
+          "confusion_matrix": [
+            [
+              45042,
+              7144,
+              1230,
+              516,
+              1435
+            ],
+            [
+              1084,
+              10758,
+              2505,
+              633,
+              1228
+            ],
+            [
+              1694,
+              17303,
+              34018,
+              25748,
+              3090
+            ],
+            [
+              138,
+              511,
+              2428,
+              12536,
+              113
+            ],
+            [
+              297,
+              1916,
+              810,
+              271,
+              21862
+            ]
+          ],
+          "per_stage": {
+            "Wake": {
+              "precision": 0.933416226297793,
+              "recall": 0.8135170769591995,
+              "f1": 0.8693520680936481,
+              "support": 55367
+            },
+            "N1": {
+              "precision": 0.2858737244897959,
+              "recall": 0.663746298124383,
+              "f1": 0.39962852897474,
+              "support": 16208
+            },
+            "N2": {
+              "precision": 0.8298894879363763,
+              "recall": 0.4155986952219222,
+              "f1": 0.5538406434176679,
+              "support": 81853
+            },
+            "N3": {
+              "precision": 0.3157364497279871,
+              "recall": 0.7971512145491543,
+              "f1": 0.45231823922063863,
+              "support": 15726
+            },
+            "REM": {
+              "precision": 0.7884448932487017,
+              "recall": 0.8690570837971061,
+              "f1": 0.826790711746464,
+              "support": 25156
+            }
+          },
+          "participant_macro_f1_mean": 0.5696862591092218,
+          "balanced_accuracy": 0.7118140737303531
+        },
+        "matches_saved_outputs": true
+      },
+      "60": {
+        "max_probability_absolute_error": 0.0,
+        "prediction_disagreements": 0,
+        "expanded_epochs": 281712,
+        "common": {
+          "n_epochs": 194310,
+          "accuracy": 0.6332406978539448,
+          "macro_f1": 0.6155636488348348,
+          "kappa": 0.5362165962354124,
+          "confusion_matrix": [
+            [
+              44787,
+              7226,
+              1313,
+              584,
+              1457
+            ],
+            [
+              1041,
+              10536,
+              2659,
+              744,
+              1228
+            ],
+            [
+              1638,
+              16570,
+              33249,
+              27402,
+              2994
+            ],
+            [
+              118,
+              508,
+              2225,
+              12777,
+              98
+            ],
+            [
+              326,
+              1936,
+              885,
+              313,
+              21696
+            ]
+          ],
+          "per_stage": {
+            "Wake": {
+              "precision": 0.9348152786474639,
+              "recall": 0.8089114454458431,
+              "f1": 0.8673179894845899,
+              "support": 55367
+            },
+            "N1": {
+              "precision": 0.2864911899064607,
+              "recall": 0.6500493583415597,
+              "f1": 0.3977049675373698,
+              "support": 16208
+            },
+            "N2": {
+              "precision": 0.8244030646401032,
+              "recall": 0.40620380438102455,
+              "f1": 0.5442447456295423,
+              "support": 81853
+            },
+            "N3": {
+              "precision": 0.3055236728837877,
+              "recall": 0.8124761541396414,
+              "f1": 0.444062141591075,
+              "support": 15726
+            },
+            "REM": {
+              "precision": 0.789720816801951,
+              "recall": 0.8624582604547623,
+              "f1": 0.8244883999315966,
+              "support": 25156
+            }
+          },
+          "participant_macro_f1_mean": 0.56556661501345,
+          "balanced_accuracy": 0.7080198045525663
+        },
+        "matches_saved_outputs": true
+      }
+    }
+  },
+  "scientific_source": "57c8922d04362d1e287cc7cd80d1e6c887ef52da016f7cdc0ba1aedc706264b5",
+  "slurm_job_id": "1604043",
+  "mean_common_balanced_accuracy": {
+    "multi": 0.7114948599784747
+  },
+  "environment": {
+    "python": "3.9.16",
+    "platform": "Linux-4.18.0-425.3.1.el8.x86_64-x86_64-with-glibc2.28",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.13.1",
+      "torch": "2.5.1",
+      "scikit-learn": "1.6.1",
+      "matplotlib": "3.9.4",
+      "xgboost": "2.1.4",
+      "lightgbm": "4.6.0",
+      "catboost": "1.2.8",
+      "pyedflib": "0.1.42",
+      "joblib": "1.5.3",
+      "wfdb": "4.1.2",
+      "pandas": "2.3.3"
+    }
+  },
+  "created_utc": "2026-11-21T06:39:14.917732+00:00"
+}
