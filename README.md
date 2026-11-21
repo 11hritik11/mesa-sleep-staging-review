@@ -2,6 +2,8 @@
 
 Archived experiment code and aggregate evidence supporting **71.15% mean five-stage balanced accuracy** in the presentation (RUN-006).
 
+**Executable reproduction:** [REPRODUCING.md](REPRODUCING.md) documents the locked environment, fitting tests, original-checkpoint replay and fresh training from authorized prepared features. Full raw-data reconstruction and a completed fresh training rerun are not claimed.
+
 ## Clone and check
 
 ```bash
@@ -16,7 +18,9 @@ The public check recalculates accuracy, balanced accuracy, macro-F1, kappa and p
 
 ## Code to review
 
-The `source/` directory is copied from the completed experiment archive, rather than rewritten example code. The new review script is outside that directory.
+Start with the formatted [readable model definitions](readable/bcg_balanced_staging/balanced_models.py), [neural training](readable/bcg_balanced_staging/train_balanced_deep.py), and [ensemble inference](readable/bcg_balanced_staging/balanced_inference.py). All 29 readable copies have the same Python syntax trees as their archived originals; run `python3 tools/check_readable.py` to check this.
+
+The `source/` directory is copied from the completed experiment archive, rather than rewritten example code. The reproduction runner executes those unchanged originals and records the effective paths/configuration. Newly written runners and review tools are outside that directory.
 
 | Topic | Original implementation |
 |---|---|
@@ -62,4 +66,4 @@ python3 verify_presentation.py
 
 Those saved-output checks passed before publication. They do not rerun training or independently compare the saved reference labels with original clinical annotations.
 
-Full end-to-end retraining additionally requires authorized MESA EDF/XML and beat data, upstream prepared artifacts, model dependencies, adapted paths and suitable compute. Original cluster paths are preserved in the archived configuration and launch scripts. This repository does not include a portable pinned training environment or claim bit-for-bit training reproduction. The Keynote presentation itself is not included.
+The repository now includes a pinned recovery environment (`pyproject.toml`, `uv.lock`) and an explicit-path runner (`reproduce.py`). Checkpoint replay and fresh fitting start from authorized audited prepared features; see [the exact commands and data contract](REPRODUCING.md). Full raw-to-result reconstruction additionally needs the private split, raw EDF/XML/beat data, upstream ECG preparation and frozen feature caches, and has not been made portable here. No bit-for-bit fresh-training claim is made. The Keynote presentation itself is not included.

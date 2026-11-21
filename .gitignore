@@ -2,6 +2,10 @@ __pycache__/
 *.py[cod]
 .DS_Store
 .venv/
+.venv-*/
+runs/
+private-data/
+readable/__pycache__/
 .env
 .env.*
 *.key
