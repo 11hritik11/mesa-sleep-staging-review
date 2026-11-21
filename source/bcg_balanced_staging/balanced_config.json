@@ -1,0 +1,17 @@
+{
+  "seed": 20261103,
+  "base_run": "/home/rdb200/nsrr-setup/data/derived/bcg_full_training_runs/20261102T213108Z",
+  "levels_ms": [0, 20, 40, 60],
+  "target_balanced_accuracy": 0.70,
+  "selection": "Mean five-class balanced accuracy across four jitter levels on fixed selection-validation participants",
+  "calibration_fraction": 0.5,
+  "bias_betas": [-0.5, 0.0, 0.25, 0.5, 0.75, 1.0],
+  "loss_weight_powers": [0.5, 1.0],
+  "epochs": 60,
+  "patience": 10,
+  "learning_rate": 0.0005,
+  "weight_decay": 0.01,
+  "batch_size": 16,
+  "loader_workers": 2,
+  "notes": "All usable training targets; no participant epoch cap. All five classes retained. Previous test already inspected: exploratory reference only. Additional signals are explicitly separate from beat-only. No guaranteed 70% outcome."
+}

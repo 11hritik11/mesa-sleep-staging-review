@@ -1,0 +1,30 @@
+{
+  "beat": {
+    "kind": "ensemble",
+    "members": [
+      "bigru_inverse",
+      "bilstm_inverse",
+      "tcn_quality_expanded"
+    ],
+    "beta": 0.0,
+    "selection_score": 0.6539080301611431,
+    "winner": "ensemble_beat"
+  },
+  "edr": {
+    "kind": "deep",
+    "beta": 0.0,
+    "selection_score": 0.6512432847880496,
+    "winner": "tcn_edr"
+  },
+  "multi": {
+    "kind": "ensemble",
+    "members": [
+      "bigru_multisensor",
+      "tcn_multisensor",
+      "lightgbm_multi"
+    ],
+    "beta": 0.0,
+    "selection_score": 0.7162251841907799,
+    "winner": "ensemble_multi"
+  }
+}
