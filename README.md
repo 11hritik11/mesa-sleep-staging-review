@@ -10,6 +10,8 @@ Archived experiment code and aggregate evidence supporting **71.15% mean five-st
 
 **Start with [the model walkthrough](MODEL_WALKTHROUGH.md)** for inputs, model architecture, training, selection and the exact calculation of 71.15%. [Verification status](VERIFICATION_STATUS.md) distinguishes completed checks from pending work.
 
+**Participant leakage review:** [participant separation and the exact files to inspect](PARTICIPANT_SEPARATION.md), with a [saved audit](participant_split_audit.json) and a runnable private-manifest checker. Declared train/validation/reference-test memberships have zero overlap; prior reference-test inspection still makes the study exploratory.
+
 ## Clone and check
 
 ```bash

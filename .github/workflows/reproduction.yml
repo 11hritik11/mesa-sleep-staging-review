@@ -20,6 +20,7 @@ jobs:
           uv run --frozen python reproduce.py doctor
           uv run --frozen python tools/check_readable.py
           uv run --frozen python verify_review.py
+          uv run --frozen python tools/test_split_audit.py
       - name: Test original fitting and reporting pipeline on synthetic data
         run: uv run --frozen python reproduce.py smoke
       - name: Test checkpoint replay and reject corrupted outputs

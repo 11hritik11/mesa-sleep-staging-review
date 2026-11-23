@@ -1,0 +1,129 @@
+{
+  "status": "PASS",
+  "partition_participants": {
+    "train": 1279,
+    "validation": 274,
+    "test": 275
+  },
+  "pairwise_overlaps": {
+    "train_vs_validation": 0,
+    "train_vs_test": 0,
+    "validation_vs_test": 0
+  },
+  "validation_role_participants": {
+    "calibration": 137,
+    "selection": 137
+  },
+  "calibration_selection_overlap": 0,
+  "artifact_sha256": {
+    "base_manifest": "df16bc5ecf6bc9dcbb3eece1d84445d114248bea4e1c009e266e26b3ed01d4a1",
+    "roles_manifest": "abc2ef94fe89a636e1e505d2dee892c5596994d5cdcc234ae483237e47a632a9",
+    "validation_results": "06fe705eae8ab5350b919f13ea505ab974ecddacc6fa88728744e1a15643ffe9"
+  },
+  "prediction_files": {
+    "beat/test_predictions_0ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "86b4d179c14e71b00077b82e9411d3e9758386c7b8131654973e3b28369127aa"
+    },
+    "beat/test_predictions_20ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "a9d9b33dcf47f073b510923a764b014700043354bb9061dc66a10a5381276aa1"
+    },
+    "beat/test_predictions_40ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "3f7a7678a96fbec503e46fcb8dec0df68b976735b2da604bae9d8cceb72c8f5d"
+    },
+    "beat/test_predictions_60ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "1887fc1fd3bf35640b1deb57c51eb9421b1135c181addcc9a4d95718f3567650"
+    },
+    "edr/test_predictions_0ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "9c5b70f64c27405bfcdad8e9b6087d789175e26b10b2f2c2609d73e43bbb7b08"
+    },
+    "edr/test_predictions_20ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "2918c333e41d8245e62c6c3e1f3ae64ae48261c76dfa424e54813eef177b790b"
+    },
+    "edr/test_predictions_40ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "ee62579cd9da3504cb083b59d8b7d980f2228d0c3acfb6068a83cc6fa706bc71"
+    },
+    "edr/test_predictions_60ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "8b80f4ebb7a2342fb4762cc7923ab3e726cc432ebaafd9caa861237d42c3b9ba"
+    },
+    "multi/test_predictions_0ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "29322eb325a061f768c72a0df835b123fcb680d795d700946130a8d1bf27dc8c"
+    },
+    "multi/test_predictions_20ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "42bd60adc0113d379cb2fefff7afe2e6c66de8413ac19686f13479f77da152cc"
+    },
+    "multi/test_predictions_40ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "c124a063beb49a06e9dd62d207be7c861ac7c4dbf1204045a7f7958978528a52"
+    },
+    "multi/test_predictions_60ms.csv": {
+      "expanded_epochs": 281712,
+      "expanded_participants": 275,
+      "common_epochs": 194310,
+      "common_participants": 271,
+      "participants_outside_test": 0,
+      "sha256": "0e7816f206799a1184ddf5bfb4c00a1ebc85bf63542596631ea5ed1f41a74dfe"
+    }
+  },
+  "validation_candidates_checked": 26,
+  "scope": "Declared participant identities, role memberships and optional saved-output membership",
+  "not_established": [
+    "Historical optimizer access to data",
+    "Untouched test-set independence",
+    "Distinct real people behind different source IDs",
+    "Training-only scaler recomputation"
+  ]
+}

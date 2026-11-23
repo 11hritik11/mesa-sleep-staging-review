@@ -17,3 +17,5 @@ Updated November 21, 2026. Engineering fixtures are artificial; their scores are
 | Complete raw EDF/XML-to-result reconstruction | Not completed; requires upstream private artifacts and preparation dependencies |
 
 See GitHub Actions for independently executed Linux engineering checks. A passing fixture or aggregate check does not establish reproduction of the clinical result from model weights. [Checkpoint replay evidence](checkpoint_replay_evidence.json) records original model hashes, per-condition aggregate metrics and comparisons. Recomputed mean common balanced accuracy is **0.7114948599784747 (71.15% rounded)**. This is inference replay from original trained weights; full fresh training has not been rerun.
+
+November 23, 2026: [participant membership audit](participant_split_audit.json) PASS on the archived private manifests, all 26 candidates' validation outputs and all 12 saved test-prediction files. Train/validation/test ID intersections are zero. See [the separation guide](PARTICIPANT_SEPARATION.md) for the distinction between disjoint people and prior test inspection, and the remaining audit limits.
