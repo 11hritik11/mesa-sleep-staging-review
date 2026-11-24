@@ -31,7 +31,9 @@ from sequences import SequenceDataset, ChunkSampler
 STOP = False
 
 
+# Residual temporal-convolution block with dilation, layer normalization and dropout.
 class TemporalBlock(nn.Module):
+    # Create two same-width dilated convolutions and their normalization/dropout layers.
     def __init__(self, width, dilation, dropout):
         super().__init__()
         self.first = nn.Conv1d(width, width, 3, padding=dilation, dilation=dilation)
@@ -39,6 +41,7 @@ class TemporalBlock(nn.Module):
         self.norm1, self.norm2 = nn.LayerNorm(width), nn.LayerNorm(width)
         self.dropout = nn.Dropout(dropout)
 
+    # Input/output shape: batch x channels x time. Return the residual block activations.
     def forward(self, x):
         y = self.norm1(F.gelu(self.first(x)).transpose(1, 2)).transpose(1, 2)
         y = self.dropout(y)
@@ -46,7 +49,9 @@ class TemporalBlock(nn.Module):
         return F.gelu(x + self.dropout(y))
 
 
+# Earlier temporal-CNN baseline used by the inherited comparison controls.
 class TemporalCNN(nn.Module):
+    # Construct feature encoding, the optional RR branch, temporal blocks and five-stage classifier from cfg.
     def __init__(self, cfg, rr_branch=True):
         super().__init__()
         self.halo = cfg["context_halo_epochs"]
@@ -68,6 +73,7 @@ class TemporalCNN(nn.Module):
         )
         self.classifier = nn.Conv1d(width, 5, 1)
 
+    # Encode feature/RR context and return five raw class scores for the central output epochs.
     def forward(self, features, rr):
         x = F.gelu(self.features(features.transpose(1, 2)))
         if self.rr_branch:
@@ -79,6 +85,8 @@ class TemporalCNN(nn.Module):
         return result[:, self.halo : self.halo + self.core]
 
 
+# Wrap a sequence dataset and deterministic chunk sampler in a PyTorch DataLoader.
+# training controls sampler behavior; workers controls parallel input loading, not participant membership.
 def loader(dataset, cfg, training=False, epoch=0, level=0, workers=None):
     return DataLoader(
         dataset,
@@ -91,6 +99,8 @@ def loader(dataset, cfg, training=False, epoch=0, level=0, workers=None):
 
 
 @torch.no_grad()
+# Run the model without gradients and compute common/expanded evaluation reports.
+# Optionally write predictions; return a dictionary with common/expanded reports and common-target log loss.
 def evaluate(
     model, dataset, cfg, level=0, device="cpu", predictions_path=None, workers=None
 ):
@@ -162,12 +172,14 @@ def evaluate(
     return output
 
 
+# Save training state through a temporary file, then replace the destination checkpoint.
 def checkpoint(path, state):
     temporary = path.with_suffix(".tmp.pt")
     torch.save(state, temporary)
     temporary.replace(path)
 
 
+# Fit an inherited temporal-CNN variant, select checkpoints on validation performance and save state/results.
 def train(args):
     global STOP
     cfg = config()
@@ -233,6 +245,7 @@ def train(args):
         cumulative = state["cumulative"]
         torch.set_rng_state(state["torch_rng"])
 
+    # Persist model, optimizer, scheduler, RNG and position so this fit can resume.
     def dump(next_epoch, next_batch):
         checkpoint(
             last,
@@ -250,6 +263,7 @@ def train(args):
             },
         )
 
+    # Set a stop flag when a scheduler signal arrives; the training loop handles checkpointing.
     def stop(signum, frame):
         global STOP
         STOP = True

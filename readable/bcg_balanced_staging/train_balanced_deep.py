@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """Full-data training selected by disjoint-validation five-class balanced accuracy."""
+# Batch guide: f = features plus missingness; r = RR streams; y = stage targets.
+# common/expanded label masks define eligible targets; they are not input features.
+
 import argparse, json, signal, time
 from pathlib import Path
 import numpy as np
@@ -29,6 +32,8 @@ STOP = False
 
 
 @torch.no_grad()
+# Evaluate a network without gradient updates at one jitter level.
+# Return raw scores, targets, participant IDs and epoch indexes; reject omitted or repeated targets.
 def validation_logits(
     model, dataset, settings, level=0, workers=None, collect_expanded=False
 ):
@@ -60,6 +65,8 @@ def validation_logits(
     return values
 
 
+# Fit one configured neural candidate using optimizer batches from the train partition.
+# Validation calibration/selection guides correction and checkpoint choice; save histories and best/last states.
 def train(args):
     global STOP
     c = cfg()
@@ -87,7 +94,9 @@ def train(args):
     if (out / "result.json").exists():
         print("ALREADY COMPLETE", spec["name"])
         return
+    # Only these training records supply optimizer batches.
     train = BalancedDataset(args.prepared, "train", spec["mask"], spec["modality"])
+    # Validation guides correction/checkpoint selection, not gradient fitting.
     val = BalancedDataset(args.prepared, "validation", "expanded", spec["modality"])
     model = BalancedNetwork(len(train.names), spec["architecture"], settings)
     counts = train.counts.astype(float)
@@ -128,6 +137,7 @@ def train(args):
         cumulative = state["cumulative"]
         torch.set_rng_state(state["rng"])
 
+    # Write a resumable checkpoint including optimizer/scheduler/RNG state and current batch position.
     def dump(epoch, batch):
         checkpoint(
             out / "last.pt",
@@ -146,6 +156,7 @@ def train(args):
             },
         )
 
+    # Request a graceful stop; the fitting loop saves its current state before exiting.
     def stop(signum, frame):
         global STOP
         STOP = True
@@ -164,6 +175,7 @@ def train(args):
                 continue
             optimizer.zero_grad(set_to_none=True)
             logits = model(f, r)
+            # y contains targets, not model inputs; negative labels are ignored.
             valid = y >= 0
             targets = y[valid]
             scores = logits[valid]
@@ -213,6 +225,7 @@ def train(args):
                 dump(epoch, batch + 1)
             if STOP:
                 raise SystemExit(75)
+        # Count every declared training target once in a complete pass.
         if cumulative["n"] != int(counts.sum()):
             raise ValueError("Training targets omitted/repeated")
         full_evidence = {

@@ -23,6 +23,8 @@ from balanced_utils import (
 from common import read_annotations, digest
 
 
+# Input: a 4-Hz respiratory signal and epoch count. Return six measures at each of three centered windows.
+# Insufficient coverage leaves measures missing; windows are label-free and stay within the recording.
 def respiratory_features(signal, epochs, hz=4):
     answer = np.full((epochs, 18), np.nan, dtype=np.float32)
     for epoch in range(epochs):
@@ -70,6 +72,8 @@ def respiratory_features(signal, epochs, hz=4):
     return answer
 
 
+# Extract centered oxygen-saturation or leg-movement summaries at 30/120/300 seconds.
+# Return one row per epoch; insufficient valid coverage remains missing.
 def simple_features(signal, epochs, hz, kind):
     width = 4 if kind == "spo2" else 3
     answer = np.full((epochs, width * 3), np.nan, dtype=np.float32)
@@ -97,6 +101,8 @@ def simple_features(signal, epochs, hz, kind):
     return answer
 
 
+# Audit one recording's XML/EDF timing and targets, then extract EDR and extra-sensor feature arrays.
+# Write the record's feature NPZ and return audit metadata; stage labels are audit/target data, not predictors.
 def extract(task):
     out, part, pid, version = task
     source = base() / "records" / f"{part}_{pid}.npz"
@@ -242,6 +248,8 @@ def extract(task):
     return row
 
 
+# Extract all recordings, partition validation people into calibration/selection, and fit extra-feature scalers.
+# Only training recordings contribute to the population scaler; write the completed balanced manifest.
 def run(args):
     manifest = verify_prepared(base())
     out = args.output
@@ -284,6 +292,7 @@ def run(args):
             if len(rows) % 20 == 0:
                 print("EXTRACTED", len(rows), "/", len(tasks), flush=True)
     arrays = []
+    # Extra-sensor population scaling follows the same training-only rule.
     for pid in ids["train"]:
         with np.load(base() / "records" / f"train_{pid}.npz") as b, np.load(
             out / "extra" / f"train_{pid}.npz"

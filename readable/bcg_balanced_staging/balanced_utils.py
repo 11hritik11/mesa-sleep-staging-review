@@ -137,14 +137,18 @@ CLASSIC_SPECS = [
 ]
 
 
+# Return the balanced-study configuration stored beside this module.
 def cfg():
     return read_json(HERE / "balanced_config.json")
 
 
+# Return the parent run's prepared-feature directory; this does not load or mix its partitions.
 def base():
     return Path(cfg()["base_run"]) / "prepared"
 
 
+# Hash the declared scientific Python/config files to identify the pipeline version.
+# This checks stored file consistency; it is not an independent proof of historical execution.
 def fingerprint():
     h = hashlib.sha256()
     for folder in (HERE, ROOT / "bcg_full_training", ROOT / "bcg_jitter_staging"):
@@ -168,6 +172,7 @@ def fingerprint():
     return h.hexdigest()
 
 
+# Copy the three pipeline source folders into the current run's source archive.
 def snapshot(out):
     for folder in (HERE, ROOT / "bcg_full_training", ROOT / "bcg_jitter_staging"):
         target = out / "source" / folder.name
@@ -177,6 +182,8 @@ def snapshot(out):
                 shutil.copy2(p, target / p.name)
 
 
+# Input: true stages y, predicted stages p and participant IDs pids. Return metrics and confusion matrices.
+# Five-stage balanced accuracy is undefined if an aggregate reference stage is absent.
 def report(y, p, pids):
     r = oldreport(y, p, pids)
     cm = np.asarray(r["confusion_matrix"])
@@ -191,6 +198,7 @@ def report(y, p, pids):
     return r
 
 
+# Return mean stage recall from a five-by-five confusion matrix; reject missing reference stages.
 def ba_from_cm(cm):
     cm = np.asarray(cm)
     den = cm.sum(1)
@@ -199,6 +207,7 @@ def ba_from_cm(cm):
     return float((np.diag(cm) / den).mean())
 
 
+# Map the requested input setting (beat, edr or multi) to extra-feature column indexes.
 def extra_columns(modality):
     if modality == "beat":
         return []
@@ -211,23 +220,30 @@ def extra_columns(modality):
     ]
 
 
+# Return ordered base plus selected extra-feature names for the input setting.
 def feature_names(modality):
     return BASE_NAMES + [EXTRA_NAMES[i] for i in extra_columns(modality)]
 
 
+# Read the calibration/selection participant lists from the prepared balanced manifest.
 def partitions(prepared):
     return read_json(prepared / "balanced_manifest.json")["validation_participants"]
 
 
+# Input: validation participant IDs. Return each ID's calibration or selection role.
+# Reject intersecting role lists or any ID outside the declared validation roles.
 def subset_labels(pid, prepared):
     groups = partitions(prepared)
     calibration = set(groups["calibration"])
     selection = set(groups["selection"])
+    # IDs must belong to exactly one of the two declared validation roles.
     if calibration & selection or not set(pid.tolist()) <= calibration | selection:
         raise ValueError("Invalid validation role membership")
     return np.array(["calibration" if p in calibration else "selection" for p in pid])
 
 
+# Load one partition's base features and append the requested sensor columns.
+# Return x/features, y/stages, p/participant IDs and e/epoch indexes with identical row alignment.
 def matrix(
     prepared, part, level=0, augmented=False, modality="beat", mask_name="common"
 ):
@@ -250,6 +266,8 @@ def matrix(
     return x, y, p, e
 
 
+# Convert raw class scores to normalized probabilities after beta-scaled training-prior correction.
+# The output is probability-shaped; class weighting/correction does not guarantee statistical calibration.
 def probability_transform(scores, prior, beta):
     scores = np.asarray(scores, dtype=float) - beta * np.log(np.maximum(prior, 1e-8))
     scores -= scores.max(1, keepdims=True)
@@ -257,6 +275,8 @@ def probability_transform(scores, prior, beta):
     return p / p.sum(1, keepdims=True)
 
 
+# Choose beta using calibration people only, then report calibration and selection scores separately.
+# Inputs are logits, validation targets/IDs, the prepared directory and training class priors.
 def calibrate(logits, y, pids, prepared, prior):
     group = subset_labels(pids, prepared)
     cal = group == "calibration"
@@ -276,12 +296,15 @@ def calibrate(logits, y, pids, prepared, prior):
     }
 
 
+# Choose one beta across all jitter levels using only calibration-role labels.
+# Return beta, per-role reports, and mean selection balanced accuracy for checkpoint/model ranking.
 def choose_beta_across_levels(evidence, prepared, prior):
     # One shared beta for all levels; never choose a separate correction for each noise condition.
     values = []
     for beta in cfg()["bias_betas"]:
         scores = []
         for logits, y, pids in evidence.values():
+            # Correction coefficients use calibration labels; selection people do not choose beta.
             take = subset_labels(pids, prepared) == "calibration"
             pred = probability_transform(logits[take], prior, beta).argmax(1)
             scores.append(
@@ -305,6 +328,7 @@ def choose_beta_across_levels(evidence, prepared, prior):
     )
 
 
+# Write validation scores, targets and row identities for each noise level as atomic NPZ files.
 def save_evidence(out, evidence):
     for level, (scores, y, pids, epochs) in evidence.items():
         temporary = out / f"validation_logits_{level}ms.tmp.npz"

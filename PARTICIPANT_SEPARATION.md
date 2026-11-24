@@ -2,7 +2,7 @@
 
 ## Which code ran on Linux?
 
-`source/` is the scientific source archived with the original run. Its 49 file hashes match the archived run checksums. The original trained ensemble was replayed on Linux and reproduced all four saved probability files exactly. `readable/` contains formatting-only copies with identical Python syntax trees. `reproduce.py`, `verify_review.py`, the audit tools and the walkthroughs were added later for review; they are not presented as historical training code.
+`source/` is the scientific source archived with the original run. Its 49 file hashes match the archived run checksums. The original trained ensemble was replayed on Linux and reproduced all four saved probability files exactly. `readable/` contains formatted and commented copies with identical Python syntax trees. `reproduce.py`, `verify_review.py`, the audit tools and the walkthroughs were added later for review; they are not presented as historical training code.
 
 ## Participant membership result
 

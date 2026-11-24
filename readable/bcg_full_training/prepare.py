@@ -29,6 +29,8 @@ from common import (
 from benchmark import verified_feature_reuse, extract_one
 
 
+# Extend one verified parent record with multiscale features, RR streams and expanded targets.
+# Write its prepared NPZ and return coverage counts; reject changed parent features, labels or beat annotations.
 def prepare_record(task):
     previous_cache, data, out, part, pid, seed, version, cfg = task
     status = extract_one((str(data), str(previous_cache), part, pid, seed, version))
@@ -102,6 +104,8 @@ def prepare_record(task):
     return row
 
 
+# Prepare all declared recordings, then fit population medians/IQRs from training records only.
+# args provides output/workers; writes the completed manifest, scalers, coverage and source snapshot.
 def run(args):
     cfg = config()
     previous = Path(cfg["source_run"])
@@ -182,6 +186,7 @@ def run(args):
         raise ValueError("Training common target coverage changed")
     # Population scaling fits every expanded clean-training target, without a sample cap.
     arrays = []
+    # Fit population normalization from training people, never validation/test.
     for pid in ids["train"]:
         with np.load(args.output / "records" / f"train_{pid}.npz") as f:
             arrays.append(f["x"][0, f["expanded"]])

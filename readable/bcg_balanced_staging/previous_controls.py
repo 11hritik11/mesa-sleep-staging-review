@@ -18,6 +18,8 @@ from balanced_data import BalancedDataset
 from train_balanced_deep import validation_logits
 
 
+# Load two already-trained parent CNN controls and rescore them on the new validation roles.
+# This step writes validation evidence/results; it does not fit those control weights anew.
 def run(args):
     torch.set_num_threads(8)
     settings = oldconfig()

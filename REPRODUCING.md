@@ -19,7 +19,7 @@ uv run --frozen python verify_review.py
 
 Python is pinned to 3.11.18. `uv.lock` pins the Python packages and distribution hashes, with a CPU PyTorch index on Linux. The twelve main package versions were checked against the surviving server environment. The original server uses Python 3.9.16, so this is a newly pinned recovery environment, not a claim that the entire historical operating system was reconstructed. System OpenMP libraries are prerequisites outside the Python lock.
 
-The original CPU training scripts are preserved without changes in `source/`. `readable/` contains formatted review copies. `tools/check_readable.py` checks their hashes and proves that all 29 copies have the same Python syntax trees. Reproduction commands execute the archived originals.
+The original CPU training scripts are preserved without changes in `source/`. `readable/` contains formatted review copies with explanatory comments above the main functions/classes and at participant-separation, normalization and fitting checks. The comments describe inputs, outputs, masks and validation roles without modifying executable statements. `tools/check_readable.py` checks their hashes and proves that all 29 copies have the same Python syntax trees. Reproduction commands execute the archived originals.
 
 ## 2. Test the executable pipeline without MESA data
 

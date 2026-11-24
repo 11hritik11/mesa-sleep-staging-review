@@ -7,7 +7,10 @@ import torch.nn.functional as F
 from balanced_utils import TemporalBlock
 
 
+# Five-stage network supporting TCN, BiGRU, BiLSTM, transformer and dense candidates.
+# width counts feature values; a matching set of missingness flags doubles the feature input width.
 class BalancedNetwork(nn.Module):
+    # Build feature and RR encoders, the chosen temporal architecture and the five-class output layer.
     def __init__(self, width, architecture, cfg):
         super().__init__()
         self.architecture = architecture
@@ -48,6 +51,8 @@ class BalancedNetwork(nn.Module):
             )
         self.output = nn.Linear(128 if architecture in ("gru", "lstm") else 96, 5)
 
+    # Inputs: feature/missingness tensor and three-channel RR context tensor.
+    # Return unnormalized five-stage scores for the central core epochs, excluding the context halo.
     def forward(self, features, rr):
         x = self.feature_encoder(features)
         if self.architecture != "mlp":

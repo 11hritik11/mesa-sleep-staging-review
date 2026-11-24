@@ -18,11 +18,15 @@ from train_balanced_deep import validation_logits
 from train_balanced_classic import raw_scores
 
 
+# Load locked models and generate per-epoch probabilities with aligned target/participant identities.
 class Predictor:
+    # Store prepared features, recorded model descriptions and an optional test-prediction cache directory.
     def __init__(self, prepared, results, cache=None):
         self.prepared, self.results, self.cache = prepared, results, cache
         self.models = {}
 
+    # Input: candidate name, participant partition, jitter level and coverage/masking options.
+    # Return probabilities, targets, participant IDs and epochs; ensembles average aligned member probabilities.
     def predict(
         self, name, part, level, expanded=False, drop_features=(), drop_rr=False
     ):

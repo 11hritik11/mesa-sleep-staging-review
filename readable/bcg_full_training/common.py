@@ -1,5 +1,9 @@
 """Shared provenance, normalization, input preparation and full-cohort readers."""
 
+# Variable guide: pid = participant ID; part = train/validation/test.
+# x = feature rows; y = stage targets; p/e returned by matrix = IDs/epoch indexes.
+# common/expanded are target-eligibility masks; RR means beat-to-beat interval.
+
 import hashlib
 import json
 import os
@@ -34,14 +38,17 @@ RAW_NAMES = FEATURE_NAMES + LOCAL_NAMES
 NAMES = RAW_NAMES + ["night_relative_" + name for name in RAW_NAMES]
 
 
+# Read a JSON file from path and return its decoded Python value.
 def read_json(path):
     return json.loads(Path(path).read_text())
 
 
+# Load the archived base-model settings from the adjacent config.json.
 def config():
     return read_json(Path(__file__).with_name("config.json"))
 
 
+# Return a content fingerprint of the base pipeline files for provenance checks.
 def source_hash():
     digestor = hashlib.sha256()
     for p in sorted(Path(__file__).parent.glob("*")):
@@ -51,6 +58,7 @@ def source_hash():
     return digestor.hexdigest()
 
 
+# Copy the current base/feature source files into an output source archive.
 def snapshot(out):
     out.mkdir(parents=True, exist_ok=True)
     source = out / "source"
@@ -65,6 +73,8 @@ def snapshot(out):
                 shutil.copy2(path, target / path.name)
 
 
+# Input: one recording's feature matrix. Return raw plus night-relative values, medians and IQR scales.
+# These statistics use this recording only and no stage labels; this is offline normalization.
 def relative_features(raw):
     """Label-free offline per-night median/IQR, computed separately for each jitter level."""
     center, scale = np.zeros(raw.shape[1]), np.ones(raw.shape[1])
@@ -78,6 +88,8 @@ def relative_features(raw):
     return np.column_stack([raw, normalized]).astype(np.float32), center, scale
 
 
+# Build the 2-Hz RR/relative-RR/validity stream and short-window RR summaries.
+# Inputs are beat times, normal-interval flags and epoch validity; returns stream and local features.
 def rr_inputs(peaks, normal, count, valid, cfg, anchors):
     """2-Hz RR input and 30/120-s features, without interpolating across long gaps."""
     rr = np.diff(peaks)
@@ -131,10 +143,13 @@ def rr_inputs(peaks, normal, count, valid, cfg, anchors):
     return output, local
 
 
+# Read the prepared manifest; reject incomplete data, a wrong feature schema or overlapping participant groups.
+# Return the checked manifest. The overlap check compares people, not individual epochs.
 def verify_prepared(prepared):
     manifest = read_json(prepared / "manifest.json")
     if manifest["status"] != "COMPLETE" or manifest["feature_names"] != NAMES:
         raise ValueError("Incomplete preparation or unexpected feature schema")
+    # Require disjoint participant IDs before a loader can return any rows.
     if any(
         set(manifest["participants"][a]) & set(manifest["participants"][b])
         for a, b in (("train", "validation"), ("train", "test"), ("validation", "test"))
@@ -143,10 +158,13 @@ def verify_prepared(prepared):
     return manifest
 
 
+# Load eligible feature rows for one requested partition: train, validation or test.
+# Return features, stage targets, participant IDs and epoch indices in matching row order.
 def matrix(prepared, part, level=0, augmented=False, mask_name="common", seed=20261102):
     """Every requested target, once; no epoch cap or subsampling."""
     manifest = verify_prepared(prepared)
     xx, yy, pp, ee = [], [], [], []
+    # part selects a whole participant group; this is not an epoch-level random split.
     for pid in manifest["participants"][part]:
         with np.load(prepared / "records" / f"{part}_{pid}.npz") as f:
             indices = np.flatnonzero(f[mask_name])
@@ -169,6 +187,8 @@ def matrix(prepared, part, level=0, augmented=False, mask_name="common", seed=20
     return np.concatenate(xx), np.concatenate(yy), np.asarray(pp), np.asarray(ee)
 
 
+# Input: training stage labels and weighting power. Return five inverse-frequency class weights.
+# Reject a training population missing any of the five stages.
 def class_weights(y, power):
     counts = np.bincount(y, minlength=5).astype(float)
     if np.any(counts == 0):

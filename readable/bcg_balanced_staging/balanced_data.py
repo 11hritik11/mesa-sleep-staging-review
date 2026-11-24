@@ -5,7 +5,10 @@ import numpy as np
 from balanced_utils import SequenceDataset, base, extra_columns, feature_names
 
 
+# Extend the base sequence dataset with the selected extra-sensor features and their missingness.
 class BalancedDataset(SequenceDataset):
+    # Select one participant partition and target mask, then load saved scalers for the chosen input setting.
+    # Loading a scaler applies previously fitted statistics; it does not refit them on validation/test people.
     def __init__(self, prepared, part, mask="common", modality="beat"):
         super().__init__(base(), part, mask)
         self.drop_features = ()
@@ -19,6 +22,8 @@ class BalancedDataset(SequenceDataset):
                 self.center = np.r_[self.center, f["center"][self.extra_columns]]
                 self.scale = np.r_[self.scale, f["scale"][self.extra_columns]]
 
+    # Build one within-recording feature/RR context chunk with its central labels and identities.
+    # Return the same tuple layout as SequenceDataset, including separate common and expanded target masks.
     def __getitem__(self, request):
         index, start, level = request
         record = self.records[index]
@@ -48,6 +53,7 @@ class BalancedDataset(SequenceDataset):
         feature[:, width:] = 1
         rr = np.zeros((length, 3, all_rr.shape[-1]), dtype=np.float32)
         x = all_x[level, lo:hi]
+        # Apply saved training-population statistics; do not fit them on this chunk.
         scaled = np.clip((x - self.center) / self.scale, -10, 10)
         feature[offset : offset + len(x), :width] = np.nan_to_num(
             scaled, nan=0, posinf=0, neginf=0

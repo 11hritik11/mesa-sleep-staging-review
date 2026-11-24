@@ -31,7 +31,9 @@ from balanced_utils import (
 )
 
 
+# Memory-bounded SGD classifier with fitted imputation/scaling and optional approximate RBF features.
 class ApproximateClassifier:
+    # Configure preprocessing and the requested logistic/SVM loss using the supplied random seed.
     def __init__(self, family, seed):
         self.family = family
         self.seed = seed
@@ -50,6 +52,8 @@ class ApproximateClassifier:
         )
         self.classes_ = np.arange(5)
 
+    # Fit preprocessing on x, then visit every weighted training row in each of ten SGD passes.
+    # Return self and call callback after each pass for diagnostics.
     def fit_full(self, x, y, weights, callback):
         transformed = self.imputer.fit_transform(x)
         self.scale.fit(transformed)
@@ -76,6 +80,7 @@ class ApproximateClassifier:
             callback(epoch + 1, self)
         return self
 
+    # Apply the already-fitted preprocessing and return raw class scores in memory-bounded blocks.
     def decision_function(self, x):
         output = []
         for start in range(0, len(x), 4096):
@@ -85,6 +90,7 @@ class ApproximateClassifier:
             output.append(self.estimator.decision_function(z))
         return np.concatenate(output)
 
+    # Apply softmax to decision scores. These transformed SVM scores are not guaranteed calibrated.
     def predict_proba(self, x):
         z = self.decision_function(x)
         z -= z.max(1, keepdims=True)
@@ -92,12 +98,15 @@ class ApproximateClassifier:
         return p / p.sum(1, keepdims=True)
 
 
+# Return raw SGD decision scores, or log-probabilities from a fitted tree model, for later prior correction.
 def raw_scores(model, x):
     if isinstance(model, ApproximateClassifier):
         return model.decision_function(x)
     return np.log(np.maximum(model.predict_proba(x), 1e-12))
 
 
+# Fit one classical candidate on the train matrix and save its model, validation evidence and histories.
+# Validation rows are used for monitoring/correction/selection, not passed as fitting rows to model.fit.
 def train(args):
     c = cfg()
     spec = CLASSIC_SPECS[args.index]
@@ -115,6 +124,7 @@ def train(args):
     if (out / "result.json").exists():
         print("ALREADY COMPLETE", spec["name"])
         return
+    # x/y are fitting inputs/targets from training people only.
     x, y, _, _ = matrix(
         args.prepared, "train", augmented=True, modality=spec["modality"]
     )
@@ -138,6 +148,8 @@ def train(args):
     monitor = rng.choice(len(y), min(5000, len(y)), replace=False)
     val_take = subset_labels(vp, args.prepared) == "selection"
 
+    # Record loss and balanced-accuracy diagnostics from fixed training-monitor and selection-validation rows.
+    # The <=5000-row training monitor limits diagnostics only; it does not cap fitting data.
     def trace(step, model, axis="Fitting pass"):
         a = model.predict_proba(x[monitor])
         b = model.predict_proba(vx[val_take])

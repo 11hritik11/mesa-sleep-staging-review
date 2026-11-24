@@ -9,7 +9,11 @@ from torch.utils.data import Dataset, Sampler
 from common import verify_prepared
 
 
+# Represent one participant partition as chronological chunks with within-recording context.
+# Targets and identity metadata are separate from the feature inputs supplied to the network.
 class SequenceDataset(Dataset):
+    # Load the requested partition and saved population scaler; build record/chunk indexes and target counts.
+    # part selects people before chunk construction, so chunks do not cross participant boundaries.
     def __init__(
         self, prepared, part, target_mask="common", drop_features=(), drop_rr=False
     ):
@@ -25,6 +29,7 @@ class SequenceDataset(Dataset):
         self.common_counts = np.zeros(5, dtype=np.int64)
         with np.load(prepared / "population_scaler.npz") as f:
             self.center, self.scale = f["center"], f["scale"]
+        # Build chunks only after choosing the participant partition.
         for pid in self.manifest["participants"][part]:
             path = prepared / "records" / f"{part}_{pid}.npz"
             with np.load(path) as f:
@@ -51,9 +56,12 @@ class SequenceDataset(Dataset):
         if self.counts.sum() == 0:
             raise ValueError("No sequence targets")
 
+    # Return the number of eligible output chunks, not the number of people.
     def __len__(self):
         return len(self.chunks)
 
+    # Input: (record index, output-start epoch, jitter-level index). Return normalized inputs, target masks and identities.
+    # Pad context at recording boundaries; -100 targets are ignored by the training loss.
     def __getitem__(self, request):
         index, start, level = request
         record = self.records[index]
@@ -64,6 +72,7 @@ class SequenceDataset(Dataset):
                 self.cache.popitem(last=False)
         self.cache.move_to_end(index)
         all_x, all_rr = self.cache[index]
+        # Clamp context to this recording: never borrow samples from another person.
         lo, hi = max(0, start - self.halo), min(
             len(record["y"]), start + self.core + self.halo
         )
@@ -104,7 +113,9 @@ class SequenceDataset(Dataset):
         )
 
 
+# Generate reproducible chunk requests, with shuffled records and jitter choices during fitting.
 class ChunkSampler(Sampler):
+    # Store the dataset, fitting/evaluation mode, training-pass number, fixed evaluation level and seed.
     def __init__(self, dataset, training=False, epoch=0, level=0, seed=20261102):
         self.dataset, self.training, self.epoch, self.level, self.seed = (
             dataset,
@@ -114,9 +125,12 @@ class ChunkSampler(Sampler):
             seed,
         )
 
+    # Return the number of chunk requests in one complete pass.
     def __len__(self):
         return len(self.dataset)
 
+    # Yield (record index, start epoch, jitter index) for every declared chunk.
+    # Evaluation preserves order and uses a fixed level; fitting shuffles and samples jitter deterministically.
     def __iter__(self):
         if not self.training:
             yield from ((i, s, self.level) for i, s in self.dataset.chunks)

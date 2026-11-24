@@ -8,6 +8,7 @@ import reporting as legacy
 import matplotlib.pyplot as plt
 
 
+# Add the exploratory-study caption and save the figure through the existing report helper.
 def export(run, name, fig):
     fig.text(
         0.5,
@@ -20,6 +21,8 @@ def export(run, name, fig):
     legacy.export(run, name, fig)
 
 
+# Resample participant confusion matrices 1000 times and return a 95% balanced-accuracy interval.
+# Resampling people, rather than individual epochs, retains within-person dependence.
 def bootstrap(report, seed=20261103):
     cms = np.array([v["confusion_matrix"] for v in report["per_participant"].values()])
     rng = np.random.default_rng(seed)
@@ -32,6 +35,8 @@ def bootstrap(report, seed=20261103):
     return np.quantile(values, [0.025, 0.975]).tolist()
 
 
+# Read saved results/audits and write tables, plots, uncertainty estimates and the results ZIP.
+# This function presents already-computed model outputs; it does not train or select new models.
 def build_report(run, prepared):
     results = read_json(run / "validation_results.json")
     selection = read_json(run / "selection.json")["tracks"]

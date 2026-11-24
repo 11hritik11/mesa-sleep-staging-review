@@ -26,7 +26,7 @@ The public check recalculates accuracy, balanced accuracy, macro-F1, kappa and p
 
 ## Code to review
 
-Start with the formatted [readable model definitions](readable/bcg_balanced_staging/balanced_models.py), [neural training](readable/bcg_balanced_staging/train_balanced_deep.py), and [ensemble inference](readable/bcg_balanced_staging/balanced_inference.py). All 29 readable copies have the same Python syntax trees as their archived originals; run `python3 tools/check_readable.py` to check this.
+Start with the commented, formatted [readable model definitions](readable/bcg_balanced_staging/balanced_models.py), [neural training](readable/bcg_balanced_staging/train_balanced_deep.py), and [ensemble inference](readable/bcg_balanced_staging/balanced_inference.py). All 29 readable copies have the same Python syntax trees as their archived originals; run `python3 tools/check_readable.py` to check this.
 
 The `source/` directory is copied from the completed experiment archive, rather than rewritten example code. The reproduction runner executes those unchanged originals and records the effective paths/configuration. Newly written runners and review tools are outside that directory.
 

@@ -21,6 +21,8 @@ from balanced_utils import (
 from balanced_inference import Predictor
 
 
+# Read a saved prediction CSV; check unique identities, valid probabilities and matching argmax classes.
+# If expected labels are supplied, require their exact identities/labels; return common/expanded reports.
 def validate_prediction(path, expected=None):
     with path.open() as f:
         rows = list(csv.DictReader(f))
@@ -53,6 +55,7 @@ def validate_prediction(path, expected=None):
     }
 
 
+# Return sensor/feature-group column indexes used for selection-validation masking diagnostics.
 def feature_groups(modality):
     names = feature_names(modality)
     groups = {}
@@ -78,6 +81,8 @@ def feature_groups(modality):
     return groups
 
 
+# Load completed candidates, rank them on selection-validation scores, and lock one winner per input setting.
+# Then evaluate reference/test outputs and generate reports; this test partition was inspected in earlier research.
 def run(args):
     torch.set_num_threads(args.threads)
     version = fingerprint()
